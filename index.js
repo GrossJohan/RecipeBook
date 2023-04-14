@@ -19,13 +19,35 @@ const users = [
 		{id: 1, email: 'admin', password: '$2b$10$0EfA6fMFRDVQWzU0WR1dmelPA7.qSp7ZYJAgneGsy2ikQltX2Duey'} // KollneKollne
 ]
 
+const recipes = [
+		{
+				id: 1,
+				title: 'Recipe 1',
+				content: 'This is the content of recipe 1',
+				userId: 1
+		},
+		{
+				id: 2,
+				title: 'Recipe 2',
+				content: 'This is the content of recipe 2',
+				userId: 2
+		},
+		{
+				id: 3,
+				title: 'Recipe 3',
+				content: 'This is the content of recipe 3',
+				userId: 1
+		}
+]
+
+
 let sessions = [
-		// {id: '123', userId: 1}
+		{id: '123', userId: 1}
 ]
 
 function tryToParseJson(jsonString) {
 		try {
-				let o = JSON.parse(jsonString);
+				var o = JSON.parse(jsonString);
 				if (o && typeof o === "object") {
 						return o;
 				}
@@ -139,6 +161,15 @@ function authorizeRequest(req, res, next) {
 		next()
 		
 }
+
+app.get('/recipes', authorizeRequest, (req, res) => {
+		
+		// Get recipes for user
+		const recipesForUser = recipes.filter(recipe => recipe.userId === req.user.id)
+		
+		// Send recipes to client
+		res.send(recipesForUser)
+})
 
 app.delete('/sessions', authorizeRequest, (req, res) => {
 		

@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  title: tak22-notes
+  title: RecipeBook
   version: 1.0.0
 paths:
   /users:
@@ -116,6 +116,44 @@ paths:
         - Bearer: [ ]
       summary: Destroy a Session
       description: 'Destroys a `Session`, signing the user out. Reads the session ID from Authorization header.'
+  /recipes:
+    summary: Path used to manage the list of recipes.
+    description: >-
+      The REST endpoint/path used to list and create zero or more `Recipe` entities.  This path contains a
+      `GET` and `POST` operation to perform the list and create tasks, respectively.
+    get:
+      tags:
+        - /recipes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+          description: Successful response - returns an array of `Recipe` entities.
+        '400':
+          content:
+            text/html:
+              examples:
+                Invalid authorization header:
+                  value: Invalid authorization header
+          description: Bad Request
+        '401':
+          content:
+            text/html:
+              examples:
+                Missing authorization header:
+                  value: Missing authorization header
+                Invalid session:
+                  value: Invalid session
+          description: Unauthorized
+      security:
+        - Bearer: [ ]
+      operationId: getRecipes
+      summary: List All Recipes
+      description: Gets a list of all `Recipe` entities.
 components:
   schemas:
     User:
@@ -165,6 +203,26 @@ components:
       example:
         email: admin
         password: KollneKollne
+    Recipe:
+      title: Root Type for Recipe
+      description: ''
+      type: object
+      properties:
+        content:
+          type: string
+        id:
+          format: int32
+          type: integer
+        title:
+          type: string
+        userId:
+          format: int32
+          type: integer
+      example:
+        content: This is the content of recipe 1
+        id: 1
+        title: Recipe 1
+        userId: 1
   securitySchemes:
     Bearer:
       scheme: bearer
@@ -173,4 +231,6 @@ tags:
   - name: /users
     description: ''
   - name: /sessions
+    description: ''
+  - name: /recipes
     description: ''
