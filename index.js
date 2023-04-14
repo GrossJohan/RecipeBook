@@ -16,33 +16,33 @@ app.use(express.static('public'))
 app.use(express.json())
 
 const users = [
-		{id: 1, email: 'admin', password: '$2b$10$0EfA6fMFRDVQWzU0WR1dmelPA7.qSp7ZYJAgneGsy2ikQltX2Duey'} // KollneKollne
+		{id: 1, email: 'admin', password: '$2b$10$NSGEJTcVuxP4Jb3yV0Fd8e4KCIXqqhf85Tu4txSuRi1Hd3iiEGvC2'} // admin123
 ]
 
 const recipes = [
 		{
 				id: 1,
-				title: 'Recipe 1',
-				content: 'This is the content of recipe 1',
+				title: 'Example 1',
+				content: 'This is the content of example recipe 1',
 				userId: 1
 		},
 		{
 				id: 2,
-				title: 'Recipe 2',
-				content: 'This is the content of recipe 2',
+				title: 'Example 2',
+				content: 'This is the content of example recipe 2',
 				userId: 2
 		},
 		{
 				id: 3,
-				title: 'Recipe 3',
-				content: 'This is the content of recipe 3',
+				title: 'Example 3',
+				content: 'This is the content of example recipe 3',
 				userId: 1
 		}
 ]
 
 
 let sessions = [
-		{id: '123', userId: 1}
+		// {id: '123', userId: 1}
 ]
 
 function tryToParseJson(jsonString) {
@@ -169,6 +169,21 @@ app.get('/recipes', authorizeRequest, (req, res) => {
 		
 		// Send recipes to client
 		res.send(recipesForUser)
+})
+
+app.post('/recipes', authorizeRequest, (req, res) => {
+		
+		// Validate title and content
+		if (!req.body.title || !req.body.content) return res.status(400).send('Title and content are required')
+		
+		// Find max id
+		const maxId = recipes.reduce((max, recipe) => recipe.id > max ? recipe.id : max, recipes[0].id)
+		
+		// Save recipe to database
+		recipes.push({id: maxId + 1, title: req.body.title, content: req.body.content, userId: req.user.id})
+		
+		// Send recipe to client
+		res.status(201).send(recipes[recipes.length - 1])
 })
 
 app.delete('/sessions', authorizeRequest, (req, res) => {
