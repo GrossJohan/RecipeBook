@@ -71,6 +71,8 @@
 			<!-- List of recipes -->
 			<div id="recipe-list">
 				<div v-for="recipe in recipes" class="recipe-card">
+					<button type="button" class="btn-close" aria-label="Close" @click="deleteRecipe(recipe.id)"></button>
+					<br>
 					{{ recipe.title }}<br>
 					{{ recipe.content }}
 				</div>
@@ -337,6 +339,17 @@
 						alert('Recipe added')
 						this.recipes.push(response.body)
 						this.modalHandler.hide()
+					}
+				})
+
+			},
+
+			deleteRecipe: function (recipeId) {
+				// Send DELETE /recipes/:id
+				this.send('DELETE', '/recipes/' + recipeId).then(response => {
+					if (response.ok) {
+						alert('Recipe deleted')
+						this.recipes = this.recipes.filter(recipe => recipe.id !== recipeId)
 					}
 				})
 			}

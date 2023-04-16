@@ -20,24 +20,24 @@ const users = [
 ]
 
 const recipes = [
-		{
-				id: 1,
-				title: 'Example 1',
-				content: 'This is the content of example recipe 1',
-				userId: 1
-		},
-		{
-				id: 2,
-				title: 'Example 2',
-				content: 'This is the content of example recipe 2',
-				userId: 2
-		},
-		{
-				id: 3,
-				title: 'Example 3',
-				content: 'This is the content of example recipe 3',
-				userId: 1
-		}
+		// {
+		// 		id: 1,
+		// 		title: 'Example 1',
+		// 		content: 'This is the content of example recipe 1',
+		// 		userId: 1
+		// },
+		// {
+		// 		id: 2,
+		// 		title: 'Example 2',
+		// 		content: 'This is the content of example recipe 2',
+		// 		userId: 2
+		// },
+		// {
+		// 		id: 3,
+		// 		title: 'Example 3',
+		// 		content: 'This is the content of example recipe 3',
+		// 		userId: 1
+		// }
 ]
 
 
@@ -96,7 +96,6 @@ app.post('/users', async (req, res) => {
 		users.push({id: maxId + 1, email: req.body.email, password: hashedPassword})
 		
 		res.status(201).end()
-		
 })
 
 // POST /sessions
@@ -129,7 +128,6 @@ app.post('/sessions', async (req, res) => {
 				console.error(error);
 				res.status(500).send('Internal server error')
 		}
-		
 })
 
 function authorizeRequest(req, res, next) {
@@ -159,7 +157,6 @@ function authorizeRequest(req, res, next) {
 		
 		// Call next middleware
 		next()
-		
 }
 
 app.get('/recipes', authorizeRequest, (req, res) => {
@@ -177,7 +174,8 @@ app.post('/recipes', authorizeRequest, (req, res) => {
 		if (!req.body.title || !req.body.content) return res.status(400).send('Title and content are required')
 		
 		// Find max id
-		const maxId = recipes.reduce((max, recipe) => recipe.id > max ? recipe.id : max, recipes[0].id)
+		// const maxId = recipes.reduce((max, recipe) => recipe.id > max ? recipe.id : max, recipes[0].id)
+		const maxId = recipes.reduce((max, recipe) => recipe.id > max ? recipe.id : max, 0)
 		
 		// Save recipe to database
 		recipes.push({id: maxId + 1, title: req.body.title, content: req.body.content, userId: req.user.id})
@@ -186,13 +184,27 @@ app.post('/recipes', authorizeRequest, (req, res) => {
 		res.status(201).send(recipes[recipes.length - 1])
 })
 
+app.delete('/recipes/:id', authorizeRequest, (req, res) => {
+		
+		// Find recipe in database
+		const recipe = recipes.find(recipe => recipe.id === parseInt(req.params.id))
+		if (!recipe) return res.status(404).send('Recipe not found')
+		
+		// Check that the recipe belongs to the user
+		if (recipe.userId !== req.user.id) return res.status(401).send('Unauthorized')
+		
+		// Remove recipe from recipes array
+		recipes.splice(recipes.indexOf(recipe), 1)
+		
+		res.status(204).end()
+})
+
 app.delete('/sessions', authorizeRequest, (req, res) => {
 		
 		// Remove session from sessions array
 		sessions = sessions.filter(session => session.id !== req.session.id)
 		
 		res.status(204).end()
-		
 })
 
 app.listen(port, () => {
