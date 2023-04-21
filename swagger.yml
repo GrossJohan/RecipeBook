@@ -2,6 +2,10 @@ openapi: 3.0.2
 info:
   title: RecipeBook
   version: 1.0.0
+  description: 'Simple RecipeBook app where you can create, view, edit and delete your recipes.'
+  license:
+    name: MIT License
+    url: 'https://opensource.org/licenses/MIT'
 paths:
   /users:
     summary: Path used to manage the list of users.
@@ -113,14 +117,15 @@ paths:
                   value: Invalid session
           description: Unauthorized
       security:
-        - Bearer: [ ]
+        -
+          Bearer: []
       summary: Destroy a Session
       description: 'Destroys a `Session`, signing the user out. Reads the session ID from Authorization header.'
   /recipes:
     summary: Path used to manage the list of recipes.
     description: >-
-      The REST endpoint/path used to list and create zero or more `Recipe` entities.  This path contains a
-      `GET` and `POST` operation to perform the list and create tasks, respectively.
+      The REST endpoint/path used to list and create zero or more `Recipe` entities.  This path contains
+      a `GET` and `POST` operation to perform the list and create recipes, respectively.
     get:
       tags:
         - /recipes
@@ -149,8 +154,10 @@ paths:
                 Invalid session:
                   value: Invalid session
           description: Unauthorized
+      deprecated: false
       security:
-        - Bearer: [ ]
+        -
+          Bearer: []
       operationId: getRecipes
       summary: List All Recipes
       description: Gets a list of all `Recipes` entities.
@@ -188,11 +195,71 @@ paths:
                 Invalid session:
                   value: Invalid session
           description: Unauthorized
+      deprecated: false
       security:
-        - Bearer: [ ]
+        -
+          Bearer: []
       operationId: createRecipe
       summary: Create a Recipe
       description: Creates a new instance of a `Recipe`.
+  '/recipes/:id':
+    summary: Path used to manage the list of recipes.
+    description: >-
+      The REST endpoint/path used to edit and delete `Recipe` entities.  This path contains a `PUT` and
+      `DELETE` operation to perform the edit and delete recipes, respectively.
+    put:
+      requestBody:
+        description: A `Recipe` to be edited.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+            examples:
+              Recipe:
+                value:
+                  content: some text
+                  title: some text
+        required: true
+      tags:
+        - '/recipes/:id'
+      responses:
+        '400':
+          description: Bad request (Title and content are required)
+        '401':
+          description: Unauthorized
+        '404':
+          description: Recipe ID not found.
+      deprecated: false
+      security:
+        -
+          Bearer: []
+      operationId: editRecipe
+      summary: Edit Recipe
+      description: Updates an instance of `Recipe`.
+    delete:
+      tags:
+        - '/recipes/:id'
+      responses:
+        '204':
+          description: Successful response - delets specific `Recipe` from array.
+        '401':
+          content:
+            text/xml:
+              examples:
+                Missing authorization header:
+                  value: Missing authorization header
+                Invalid session:
+                  value: Invalid session
+          description: Unauthorized
+        '404':
+          description: Recipe ID not found in database.
+      deprecated: false
+      security:
+        -
+          Bearer: []
+      operationId: deleteRecipe
+      summary: Delete Recipe
+      description: Deletes an instance of a `Recipe`.
 components:
   schemas:
     User:
@@ -267,9 +334,15 @@ components:
       scheme: bearer
       type: http
 tags:
-  - name: /users
+  -
+    name: /users
     description: ''
-  - name: /sessions
+  -
+    name: /sessions
     description: ''
-  - name: /recipes
+  -
+    name: /recipes
+    description: ''
+  -
+    name: '/recipes/:id'
     description: ''

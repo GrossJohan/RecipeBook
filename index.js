@@ -174,7 +174,6 @@ app.post('/recipes', authorizeRequest, (req, res) => {
 		if (!req.body.title || !req.body.content) return res.status(400).send('Title and content are required')
 		
 		// Find max id
-		// const maxId = recipes.reduce((max, recipe) => recipe.id > max ? recipe.id : max, recipes[0].id)
 		const maxId = recipes.reduce((max, recipe) => recipe.id > max ? recipe.id : max, 0)
 		
 		// Save recipe to database
@@ -197,6 +196,26 @@ app.delete('/recipes/:id', authorizeRequest, (req, res) => {
 		recipes.splice(recipes.indexOf(recipe), 1)
 		
 		res.status(204).end()
+})
+
+app.put('/recipes/:id', authorizeRequest, (req, res) => {
+
+		// Validate title and content
+		if (!req.body.title || !req.body.content) return res.status(400).send('Title and content are required')
+
+		// Find recipe in database
+		const recipe = recipes.find(recipe => recipe.id === parseInt(req.params.id))
+		if (!recipe) return res.status(404).send('Recipe not found')
+
+		// Check that the recipe belongs to the user
+		if (recipe.userId !== req.user.id) return res.status(401).send('Unauthorized')
+
+		// Update recipe
+		recipe.title = req.body.title
+		recipe.content = req.body.content
+
+		// Send recipe to client
+		res.send(recipe)
 })
 
 app.delete('/sessions', authorizeRequest, (req, res) => {
