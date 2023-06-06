@@ -38,3 +38,4 @@ npm start
 * [uuid](https://www.npmjs.com/package/uuid)
 * [@gradeup/email-verify](https://www.npmjs.com/package/@gradeup/email-verify)
 * [nodemon](https://www.npmjs.com/package/nodemon)
+* [cypress](https://www.npmjs.com/package/cypress)

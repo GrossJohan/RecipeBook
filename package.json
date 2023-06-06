@@ -20,5 +20,8 @@
     "uuid": "^9.0.0",
     "vue": "^3.3.2",
     "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "cypress": "^12.13.0"
   }
 }
