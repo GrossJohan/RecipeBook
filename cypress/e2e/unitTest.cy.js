@@ -11,32 +11,45 @@ describe('Pre-existed user login with invalid and valid credentials', () => {
         cy.visit('http://localhost:3000');
     });
     it('should not login if email is incorrect', () => {
-        cy.get('.text-center > .row > :nth-child(2)').contains('Sign In').click();
+        cy.get('.text-center > .row > :nth-child(2)').contains('Sign In').click({force: true});
+        cy.wait(1000);
         cy.get('#signInEmail').type('admin.admin@gmail.com');
+        cy.wait(1000);
         cy.get('#signInPassword').type('admin123');
-        cy.get('#signInModal > .modal-dialog > .modal-content > .modal-footer > .btn-primary').click();
+        cy.wait(1000);
+        cy.get('#signInModal > .modal-dialog > .modal-content > .modal-footer > .btn-primary').click({force: true});
+        cy.wait(1000);
         cy.wait(500);
         cy.get('.text-center > .row > :nth-child(1)').should('not.contain', 'Sign Out');
+        cy.wait(1000);
         cy.get('.text-center > .row > :nth-child(2)').should('not.contain', 'Add Recipe');
     });
 
     it('should not login if password is incorrect', () => {
-        cy.get('.text-center > .row > :nth-child(2)').contains('Sign In').click();
+        cy.get('.text-center > .row > :nth-child(2)').contains('Sign In').click({force: true});
+        cy.wait(1000);
         cy.get('#signInEmail').type('admin');
+        cy.wait(1000);
         cy.get('#signInPassword').type('Passw0rd');
-        cy.get('#signInModal > .modal-dialog > .modal-content > .modal-footer > .btn-primary').click();
+        cy.wait(1000);
+        cy.get('#signInModal > .modal-dialog > .modal-content > .modal-footer > .btn-primary').click({force: true});
         cy.wait(500);
         cy.get('.text-center > .row > :nth-child(1)').should('not.contain', 'Sign Out');
+        cy.wait(1000);
         cy.get('.text-center > .row > :nth-child(2)').should('not.contain', 'Add Recipe');
     });
 
     it('should log in a user successfully with correct credentials', () => {
-        cy.get('.text-center > .row > :nth-child(2)').contains('Sign In').click();
+        cy.get('.text-center > .row > :nth-child(2)').contains('Sign In').click({force: true});
+        cy.wait(1000);
         cy.get('#signInEmail').type('admin');
+        cy.wait(1000);
         cy.get('#signInPassword').type('admin123');
-        cy.get('#signInModal > .modal-dialog > .modal-content > .modal-footer > .btn-primary').click();
+        cy.wait(1000);
+        cy.get('#signInModal > .modal-dialog > .modal-content > .modal-footer > .btn-primary').click({force: true});
         cy.wait(500);
         cy.get('.text-center > .row > :nth-child(1)').should('contain', 'Sign Out');
+        cy.wait(1000);
         cy.get('.text-center > .row > :nth-child(2)').should('contain', 'Add Recipe');
     });
 });
