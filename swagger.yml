@@ -270,6 +270,17 @@ paths:
           in: path
           required: true
       responses:
+        '200':
+          content:
+            text/html:
+              examples:
+                Recipe:
+                  value:
+                    id: 1
+                    title: some text
+                    content: some text
+                    userId: 1
+          description: OK
         '400':
           content:
             text/html:
